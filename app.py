@@ -720,10 +720,7 @@ def render_panel(res, title_prefix, date_desc):
     st.markdown(panel_html, unsafe_allow_html=True)
 
     detail_text = f"{date_desc}\n"
-    detail_text += f"【處理後數字串】: {res['raw_seq']}\n"
-    detail_text += f"【格局數】: {res['pattern_num']}  ｜  【目標數】: {res['goal_num']}  ｜  【格局】: {res['pattern_name']}\n"
-    detail_text += "────────────────────────────────────────\n"
-    detail_text += "【兩兩拆解與歸類詳情】:\n"
+    
     for p in res['pairs_info']:
         inf_tag = " [無限大 ∞]" if p['is_infinite'] else ""
         detail_text += f"  • 組合 [{p['pair']}] ➔ {p['star']} ({p['strength']}){inf_tag}\n"
