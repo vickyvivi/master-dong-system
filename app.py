@@ -5,6 +5,7 @@ import os
 import base64
 import html
 import datetime
+import time
 from lunar_python import Solar, Lunar
 
 # -------------------------------------------------------------
@@ -737,7 +738,6 @@ def call_model(api_key: str, prompt_content: str) -> str:
     if not api_key:
         raise ValueError("尚未設定有效的 API Key！")
 
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent"
     headers = {
         "Content-Type": "application/json",
         "x-goog-api-key": api_key
@@ -749,43 +749,68 @@ def call_model(api_key: str, prompt_content: str) -> str:
         }
     }
 
-    try:
-        res = requests.post(url, headers=headers, json=payload, timeout=(10, 120))
-    except requests.exceptions.Timeout:
-        raise TimeoutError("AI 報告生成時間超過 120 秒，請稍後重新嘗試。")
-    except requests.exceptions.ConnectionError:
-        raise ConnectionError("無法連線至 Google API 伺服器，請檢查網路連線。")
-    except requests.exceptions.RequestException as req_err:
-        raise RuntimeError(f"網路請求發生異常：{str(req_err)}")
+    # 優先使用低延遲模型；遇到暫時性 503 時重試，再切換備援模型。
+    model_plan = [
+        ("gemini-3.5-flash-lite", 2),
+        ("gemini-3.5-flash", 1)
+    ]
+    last_service_message = ""
 
-    try:
-        res_data = res.json()
-    except ValueError:
-        raise ValueError(f"API 回傳非標準 JSON 格式（HTTP {res.status_code}）：{res.text}")
+    for model_name, max_attempts in model_plan:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
 
-    if res.status_code != 200 or "error" in res_data:
-        err_info = res_data.get("error", {})
-        err_code = err_info.get("code", res.status_code)
-        err_msg = err_info.get("message", res.text)
-        if err_code == 401:
-            raise PermissionError(
-                "Gemini API 拒絕目前的憑證。請確認 Streamlit Secrets 的 GEMINI_API_KEY "
-                "是從 Google AI Studio API Keys 頁面新建立的 Gemini Auth API Key，"
-                "不是 OAuth Token、Service Account 憑證或其他 Google Cloud 金鑰。"
-            )
-        if "RESOURCE_EXHAUSTED" in err_msg or "Quota exceeded" in err_msg:
-            raise ResourceWarning("系統用量已達免費額度上限 (Rate Limit)，請等待約 20~30 秒後重新點擊生成！")
-        raise RuntimeError(f"Google API 錯誤 [狀態碼 {err_code}]：{err_msg}")
+        for attempt in range(max_attempts):
+            try:
+                res = requests.post(url, headers=headers, json=payload, timeout=(10, 120))
+            except requests.exceptions.Timeout:
+                raise TimeoutError("AI 報告生成時間超過 120 秒，請稍後重新嘗試。")
+            except requests.exceptions.ConnectionError:
+                raise ConnectionError("無法連線至 Google API 伺服器，請檢查網路連線。")
+            except requests.exceptions.RequestException as req_err:
+                raise RuntimeError(f"網路請求發生異常：{str(req_err)}")
 
-    try:
-        candidates = res_data.get("candidates", [])
-        if candidates:
-            parts = candidates[0].get("content", {}).get("parts", [])
-            if parts and "text" in parts[0]:
-                return parts[0]["text"]
-        raise KeyError("API 回傳資料結構中缺少文字內容。")
-    except (KeyError, IndexError, TypeError) as parse_err:
-        raise ValueError(f"解析 API 回傳內容時發生錯誤：{str(parse_err)}")
+            try:
+                res_data = res.json()
+            except ValueError:
+                raise ValueError(f"API 回傳非標準 JSON 格式（HTTP {res.status_code}）：{res.text}")
+
+            if res.status_code == 200 and "error" not in res_data:
+                candidates = res_data.get("candidates", [])
+                try:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    if parts and "text" in parts[0]:
+                        return parts[0]["text"]
+                    raise KeyError("API 回傳資料結構中缺少文字內容。")
+                except (KeyError, IndexError, TypeError) as parse_err:
+                    raise ValueError(f"解析 API 回傳內容時發生錯誤：{str(parse_err)}")
+
+            err_info = res_data.get("error", {})
+            err_code = err_info.get("code", res.status_code)
+            err_msg = err_info.get("message", res.text)
+
+            if err_code == 503:
+                last_service_message = err_msg
+                if attempt + 1 < max_attempts:
+                    time.sleep(2 ** attempt)
+                continue
+
+            if err_code == 401:
+                raise PermissionError(
+                    "Gemini API 拒絕目前的憑證。請確認 Streamlit Secrets 的 GEMINI_API_KEY "
+                    "是從 Google AI Studio API Keys 頁面新建立的 Gemini Auth API Key，"
+                    "不是 OAuth Token、Service Account 憑證或其他 Google Cloud 金鑰。"
+                )
+
+            if "RESOURCE_EXHAUSTED" in err_msg or "Quota exceeded" in err_msg:
+                raise ResourceWarning("系統用量已達額度上限，請稍後再重新生成。")
+
+            raise RuntimeError(f"Google API 錯誤 [狀態碼 {err_code}]：{err_msg}")
+
+    raise RuntimeError(
+        "Google AI 目前服務繁忙，系統已自動重試並切換備援模型，但仍未成功。"
+        "請等待一至兩分鐘後再試。"
+        + (f"（服務訊息：{last_service_message}）" if last_service_message else "")
+    )
 
 # -------------------------------------------------------------
 # 7. 排盤邏輯與幾何角度分析引擎 (90度 & 180度)
