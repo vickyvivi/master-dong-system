@@ -10,7 +10,6 @@ from lunar_python import Solar, Lunar
 # -------------------------------------------------------------
 # 0. 🔑 Google API Key 配置
 # -------------------------------------------------------------
-DEFAULT_API_KEY = ""
 
 # -------------------------------------------------------------
 # 1. 頁面全域配置
@@ -1261,13 +1260,12 @@ elif st.session_state.page == 'analysis':
 
         st.write("---")
 
-        active_api_key = DEFAULT_API_KEY
-        if not active_api_key or active_api_key == "填入你的_API_KEY":
-            try:
-                if "GEMINI_API_KEY" in st.secrets:
-                    active_api_key = st.secrets["GEMINI_API_KEY"]
-            except Exception:
-                active_api_key = None
+        active_api_key = None
+        try:
+            if "GEMINI_API_KEY" in st.secrets:
+                active_api_key = st.secrets["GEMINI_API_KEY"]
+        except Exception:
+            active_api_key = None
 
         prompt_content = generate_prompt(solar_res, lunar_res, solar_mbti, lunar_mbti, theme_key="general")
 
@@ -1283,7 +1281,7 @@ elif st.session_state.page == 'analysis':
                         if st.button("🔄 重新嘗試生成總體報告", key="retry_main_report"):
                             st.rerun()
             else:
-                st.warning("⚠️ 程式碼頂部的 `DEFAULT_API_KEY` 尚未填入有效的 API Key！")
+                st.warning("⚠️ 尚未在 Streamlit Secrets 設定 `GEMINI_API_KEY`！")
 
         if st.session_state.report_cache:
             st.markdown(st.session_state.report_cache)
@@ -1298,13 +1296,12 @@ elif st.session_state.page == 'love_analysis':
         solar_mbti = get_eastern_mbti_info(solar_res, prefix="S")
         lunar_mbti = get_eastern_mbti_info(lunar_res, prefix="L")
         
-        active_api_key = DEFAULT_API_KEY
-        if not active_api_key or active_api_key == "填入你的_API_KEY":
-            try:
-                if "GEMINI_API_KEY" in st.secrets:
-                    active_api_key = st.secrets["GEMINI_API_KEY"]
-            except Exception:
-                active_api_key = None
+        active_api_key = None
+        try:
+            if "GEMINI_API_KEY" in st.secrets:
+                active_api_key = st.secrets["GEMINI_API_KEY"]
+        except Exception:
+            active_api_key = None
 
         love_prompt = generate_prompt(solar_res, lunar_res, solar_mbti, lunar_mbti, theme_key="love")
 
@@ -1320,7 +1317,7 @@ elif st.session_state.page == 'love_analysis':
                         if st.button("🔄 重新嘗試生成感情報告", key="retry_love_report"):
                             st.rerun()
             else:
-                st.warning("⚠️ 程式碼頂部的 `DEFAULT_API_KEY` 尚未填入有效的 API Key！")
+                st.warning("⚠️ 尚未在 Streamlit Secrets 設定 `GEMINI_API_KEY`！")
 
         if st.session_state.love_report_cache:
             st.markdown(st.session_state.love_report_cache)
@@ -1335,13 +1332,12 @@ elif st.session_state.page == 'career_analysis':
         solar_mbti = get_eastern_mbti_info(solar_res, prefix="S")
         lunar_mbti = get_eastern_mbti_info(lunar_res, prefix="L")
 
-        active_api_key = DEFAULT_API_KEY
-        if not active_api_key or active_api_key == "填入你的_API_KEY":
-            try:
-                if "GEMINI_API_KEY" in st.secrets:
-                    active_api_key = st.secrets["GEMINI_API_KEY"]
-            except Exception:
-                active_api_key = None
+        active_api_key = None
+        try:
+            if "GEMINI_API_KEY" in st.secrets:
+                active_api_key = st.secrets["GEMINI_API_KEY"]
+        except Exception:
+            active_api_key = None
 
         career_prompt = generate_prompt(solar_res, lunar_res, solar_mbti, lunar_mbti, theme_key="career")
 
@@ -1357,7 +1353,7 @@ elif st.session_state.page == 'career_analysis':
                         if st.button("🔄 重新嘗試生成事業報告", key="retry_career_report"):
                             st.rerun()
             else:
-                st.warning("⚠️ 程式碼頂部的 `DEFAULT_API_KEY` 尚未填入有效的 API Key！")
+                st.warning("⚠️ 尚未在 Streamlit Secrets 設定 `GEMINI_API_KEY`！")
 
         if st.session_state.career_report_cache:
             st.markdown(st.session_state.career_report_cache)
