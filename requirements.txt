@@ -1,2 +1,5 @@
 streamlit
 lunar-python
+requests
+streamlit>=1.30.0
+lunardate>=0.2.2
