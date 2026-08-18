@@ -737,7 +737,7 @@ def call_model(api_key: str, prompt_content: str) -> str:
     if not api_key:
         raise ValueError("尚未設定有效的 API Key！")
 
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent"
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent"
     headers = {
         "Content-Type": "application/json",
         "x-goog-api-key": api_key
@@ -764,6 +764,12 @@ def call_model(api_key: str, prompt_content: str) -> str:
         err_info = res_data.get("error", {})
         err_code = err_info.get("code", res.status_code)
         err_msg = err_info.get("message", res.text)
+        if err_code == 401:
+            raise PermissionError(
+                "Gemini API 拒絕目前的憑證。請確認 Streamlit Secrets 的 GEMINI_API_KEY "
+                "是從 Google AI Studio API Keys 頁面新建立的 Gemini Auth API Key，"
+                "不是 OAuth Token、Service Account 憑證或其他 Google Cloud 金鑰。"
+            )
         if "RESOURCE_EXHAUSTED" in err_msg or "Quota exceeded" in err_msg:
             raise ResourceWarning("系統用量已達免費額度上限 (Rate Limit)，請等待約 20~30 秒後重新點擊生成！")
         raise RuntimeError(f"Google API 錯誤 [狀態碼 {err_code}]：{err_msg}")
