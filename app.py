@@ -737,7 +737,7 @@ def call_model(api_key: str, prompt_content: str) -> str:
     if not api_key:
         raise ValueError("尚未設定有效的 API Key！")
 
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent"
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent"
     headers = {
         "Content-Type": "application/json",
         "x-goog-api-key": api_key
@@ -745,8 +745,7 @@ def call_model(api_key: str, prompt_content: str) -> str:
     payload = {
         "contents": [{"parts": [{"text": prompt_content}]}],
         "generationConfig": {
-            "maxOutputTokens": 4096,
-            "temperature": 0.7
+            "maxOutputTokens": 4096
         }
     }
 
