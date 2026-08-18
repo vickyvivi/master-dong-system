@@ -743,13 +743,17 @@ def call_model(api_key: str, prompt_content: str) -> str:
         "x-goog-api-key": api_key
     }
     payload = {
-        "contents": [{"parts": [{"text": prompt_content}]}]
+        "contents": [{"parts": [{"text": prompt_content}]}],
+        "generationConfig": {
+            "maxOutputTokens": 4096,
+            "temperature": 0.7
+        }
     }
 
     try:
-        res = requests.post(url, headers=headers, json=payload, timeout=45)
+        res = requests.post(url, headers=headers, json=payload, timeout=(10, 120))
     except requests.exceptions.Timeout:
-        raise TimeoutError("API 請求逾時（超過 45 秒），請檢查網路連線或稍後再試。")
+        raise TimeoutError("AI 報告生成時間超過 120 秒，請稍後重新嘗試。")
     except requests.exceptions.ConnectionError:
         raise ConnectionError("無法連線至 Google API 伺服器，請檢查網路連線。")
     except requests.exceptions.RequestException as req_err:
