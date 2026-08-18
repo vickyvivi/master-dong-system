@@ -398,6 +398,56 @@ st.markdown("""
         .life-seal strong { font-size:27px; }
     }
 
+
+    /* 商業化第一階段：品牌首屏、價值旅程與進階報告預覽 */
+    .commerce-shell { margin-bottom:22px; }
+    .commerce-nav { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:2px 2px 16px; border-bottom:1px solid rgba(126,101,75,.15); }
+    .commerce-brand { display:flex; align-items:center; gap:10px; }
+    .commerce-seal { width:38px; height:38px; border:1.5px solid #8C1C1C; border-radius:50%; display:grid; place-items:center; color:#8C1C1C; font-family:'Noto Serif TC',serif; font-weight:900; }
+    .commerce-brand-name { font-family:'Noto Serif TC',serif; font-weight:900; letter-spacing:3px; color:#28211C; }
+    .commerce-brand-en { font-size:8px; letter-spacing:1.7px; color:#94867A; margin-top:2px; }
+    .commerce-nav-note { font-size:11px; color:#7B6F64; background:#F3EDE3; border-radius:999px; padding:6px 10px; }
+    .commerce-hero { position:relative; overflow:hidden; margin-top:18px; padding:34px 34px 30px; border:1px solid #DCCDB8; border-radius:28px; background:linear-gradient(135deg,#FFFCF6 0%,#F3E9DA 58%,#E8EEF0 100%); box-shadow:0 18px 45px rgba(66,46,28,.09); }
+    .commerce-hero::before { content:""; position:absolute; width:240px; height:240px; border:1px solid rgba(140,28,28,.10); border-radius:50%; right:-76px; top:-100px; box-shadow:0 0 0 24px rgba(140,28,28,.025),0 0 0 50px rgba(96,125,139,.025); }
+    .commerce-kicker { color:#8C1C1C; font-size:11px; font-weight:900; letter-spacing:3px; }
+    .commerce-title { position:relative; max-width:650px; margin:10px 0 12px; font-family:'Noto Serif TC',serif; font-size:34px; line-height:1.35; font-weight:900; color:#29211B; letter-spacing:1px; }
+    .commerce-title em { color:#8C1C1C; font-style:normal; }
+    .commerce-lead { position:relative; max-width:620px; color:#675B51; font-size:14px; line-height:1.85; }
+    .commerce-pills { position:relative; display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+    .commerce-pill { padding:7px 11px; border-radius:999px; background:rgba(255,255,255,.72); border:1px solid rgba(124,100,78,.16); color:#5E5349; font-size:11px; font-weight:700; }
+    .value-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0 22px; }
+    .value-card { background:rgba(255,253,248,.9); border:1px solid #E3D8C8; border-radius:16px; padding:14px; }
+    .value-index { color:#8C1C1C; font-family:'Noto Serif TC',serif; font-size:17px; font-weight:900; }
+    .value-title { color:#332A24; font-weight:900; font-size:13px; margin:5px 0 3px; }
+    .value-copy { color:#7C7066; font-size:11px; line-height:1.6; }
+    .entry-heading { text-align:center; margin:28px 0 13px; }
+    .entry-heading small { color:#8C1C1C; letter-spacing:2px; font-size:10px; font-weight:900; }
+    .entry-heading h2 { font-family:'Noto Serif TC',serif; color:#302720; font-size:22px; margin:5px 0 !important; }
+    .entry-heading p { color:#81756A !important; font-size:12px !important; margin:0 !important; }
+    .privacy-note { display:flex; justify-content:center; gap:8px; align-items:center; color:#7A7067; font-size:10px; margin:10px 0 2px; }
+
+    .insight-intro { text-align:center; margin:8px 0 14px; }
+    .insight-intro strong { display:block; color:#332820; font-family:'Noto Serif TC',serif; font-size:20px; }
+    .insight-intro span { color:#80746A; font-size:11px; }
+    .premium-preview { position:relative; overflow:hidden; background:#302925; color:#F7F0E5; border-radius:22px; padding:23px; margin:18px 0 10px; box-shadow:0 14px 34px rgba(40,30,23,.14); }
+    .premium-preview::after { content:"祐"; position:absolute; right:12px; bottom:-36px; font-family:'Noto Serif TC',serif; font-size:110px; font-weight:900; color:rgba(255,255,255,.035); }
+    .premium-kicker { color:#D8A9A2; font-size:10px; letter-spacing:2px; font-weight:900; }
+    .premium-title { font-family:'Noto Serif TC',serif; font-size:21px; font-weight:900; margin:6px 0; }
+    .premium-copy { color:#CFC4B8; font-size:12px; line-height:1.7; max-width:680px; }
+    .premium-grid { position:relative; display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:14px; }
+    .premium-item { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:11px; }
+    .premium-item b { display:block; color:#F7EFE3; font-size:12px; margin-bottom:3px; }
+    .premium-item span { color:#BFB2A7; font-size:10px; line-height:1.5; }
+    .test-badge { display:inline-block; margin-top:12px; color:#EAC8C2; border:1px solid rgba(234,200,194,.35); border-radius:999px; padding:4px 8px; font-size:9px; letter-spacing:1px; }
+
+    @media (max-width:760px) {
+        .commerce-nav-note { display:none; }
+        .commerce-hero { padding:25px 20px; border-radius:22px; }
+        .commerce-title { font-size:27px; }
+        .value-grid { grid-template-columns:1fr; }
+        .premium-grid { grid-template-columns:repeat(2,1fr); }
+    }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -1086,14 +1136,41 @@ def render_panel(res: dict, title_prefix: str, date_desc: str, tone: str = "sola
 # -------------------------------------------------------------
 
 if st.session_state.page == 'main':
-    # 頂部東方禪風 Logo 品牌標題
+    # 商業版品牌首屏：先說明價值，再引導免費排盤
     st.markdown(
         """
-        <div class="brand-header-container">
-            <div class="brand-logo-badge">辰</div>
-            <div class="brand-main-title">辰 祐 閣</div>
-            <div class="brand-sub-title">EASTERN MBTI · NUMEROLOGY & SHENSHA</div>
-            <div class="brand-slogan-text">以數觀心 ‧ 遇見天賦原型</div>
+        <div class="commerce-shell">
+            <div class="commerce-nav">
+                <div class="commerce-brand">
+                    <div class="commerce-seal">辰</div>
+                    <div>
+                        <div class="commerce-brand-name">辰 祐 閣</div>
+                        <div class="commerce-brand-en">EASTERN NUMEROLOGY STUDIO</div>
+                    </div>
+                </div>
+                <div class="commerce-nav-note">雙曆人格分析・測試體驗版</div>
+            </div>
+            <section class="commerce-hero">
+                <div class="commerce-kicker">以數觀心・照見內外人格</div>
+                <div class="commerce-title">從出生數字，看見你的<br><em>外在行動與內在天賦</em></div>
+                <div class="commerce-lead">以陽曆理解你面對世界的方式，以陰曆梳理內在需求；結合生命數與神煞格局，把複雜命盤整理成可以閱讀、理解與實踐的人生線索。</div>
+                <div class="commerce-pills">
+                    <span class="commerce-pill">☀ 陽曆外顯人格</span>
+                    <span class="commerce-pill">☾ 陰曆內在人格</span>
+                    <span class="commerce-pill">◇ 生命數字</span>
+                    <span class="commerce-pill">⌁ 神煞格局</span>
+                </div>
+            </section>
+            <div class="value-grid">
+                <div class="value-card"><div class="value-index">壹</div><div class="value-title">輸入生日</div><div class="value-copy">以單一日期完成陽曆與陰曆雙盤換算。</div></div>
+                <div class="value-card"><div class="value-index">貳</div><div class="value-title">讀懂雙重人格</div><div class="value-copy">先看外在行動，再理解內在節奏與需求。</div></div>
+                <div class="value-card"><div class="value-index">參</div><div class="value-title">轉化為行動</div><div class="value-copy">從優勢、盲點到關係與職涯，找到下一步。</div></div>
+            </div>
+            <div class="entry-heading">
+                <small>FREE DUAL-CHART READING</small>
+                <h2>開始免費雙曆排盤</h2>
+                <p>輸入陽曆生日，即時取得基礎人格與命盤摘要</p>
+            </div>
         </div>
         """,
         unsafe_allow_html=True
@@ -1109,6 +1186,11 @@ if st.session_state.page == 'main':
             day = st.number_input("日", min_value=1, max_value=31, value=1, step=1, key="input_day")
         
         submit_btn = st.form_submit_button("一 鍵 自 動 排 盤", on_click=clear_report_cache)
+
+    st.markdown(
+        '<div class="privacy-note"><span>◌</span><span>生日僅用於本次排盤；測試版不建立個人會員檔案</span></div>',
+        unsafe_allow_html=True
+    )
 
     try:
         validated_date = datetime.date(year, month, day)
@@ -1166,8 +1248,28 @@ if st.session_state.page == 'main':
         else:
             st.error(lunar_desc)
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.button("🔮 解鎖雙盤深度解析報告", on_click=lambda: switch_page('analysis'), use_container_width=True, key="btn_unlock_report")
+    st.markdown(
+        """
+        <div class="insight-intro">
+            <strong>免費雙盤摘要已完成</strong>
+            <span>先理解命盤輪廓，再進一步探索關係、天賦與成長策略</span>
+        </div>
+        <section class="premium-preview">
+            <div class="premium-kicker">COMPLETE INSIGHT PREVIEW</div>
+            <div class="premium-title">完整雙盤深度解析</div>
+            <div class="premium-copy">商業版將把命盤轉譯成容易實踐的個人指南。現階段可先免費體驗完整分析流程，付款與會員功能將於下一階段接入。</div>
+            <div class="premium-grid">
+                <div class="premium-item"><b>人格優勢</b><span>看見自然天賦與可放大的能力</span></div>
+                <div class="premium-item"><b>盲點課題</b><span>辨識壓力下容易重複的模式</span></div>
+                <div class="premium-item"><b>感情互動</b><span>理解安全感與關係溝通方式</span></div>
+                <div class="premium-item"><b>事業財富</b><span>整理適合的工作與決策方向</span></div>
+            </div>
+            <div class="test-badge">測試版・目前不收費</div>
+        </section>
+        """,
+        unsafe_allow_html=True
+    )
+    st.button("查看完整雙盤深度解析（測試體驗）", on_click=lambda: switch_page('analysis'), use_container_width=True, key="btn_unlock_report")
 
 elif st.session_state.page == 'analysis':
     st.button("⬅️ 返回排盤主頁", on_click=lambda: switch_page('main'), key="btn_back_to_main")
